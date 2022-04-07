@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mceasy/model/cuti_model.dart';
 import 'package:mceasy/model/karyawan_model.dart';
 import 'package:mceasy/provider/list_change_notifier.dart';
 import 'package:mceasy/ui/list/widgets/card_body.dart';
@@ -9,9 +10,9 @@ import 'package:provider/provider.dart';
 
 
 class WList extends StatefulWidget {
-  const WList({Key? key, required this.isRemote}) : super(key: key);
+  const WList({Key? key, required this.pos}) : super(key: key);
 
-  final bool isRemote;
+  final int pos;
 
   @override
   State<WList> createState() => _WListState();
@@ -26,9 +27,12 @@ class _WListState extends State<WList> {
 
   void _loadKaryawan() {
     try {
+        context
+            .read<ListChangeNotifier>()
+            .getAllFilterCuti(widget.pos);
       context
           .read<ListChangeNotifier>()
-          .getAllUsuarios();
+          .getAllFilter(widget.pos);
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -42,39 +46,41 @@ class _WListState extends State<WList> {
 
   @override
   Widget build(BuildContext context) {
-    var myData = context.watch<ListChangeNotifier>().listKaryawan;
+    var dataKaryawan = context.watch<ListChangeNotifier>().listKaryawan;
+    var dataCuti = context.watch<ListChangeNotifier>().listCuti;
     return Stack(
       children: [
         Column(
           children: [
-            if (myData.isEmpty &&
+            if (dataKaryawan.isEmpty &&
                 !context.watch<ListChangeNotifier>().loading)
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.2,
               ),
-            if (myData.isEmpty &&
+            if (dataKaryawan.isEmpty &&
                 !context.watch<ListChangeNotifier>().loading)
               const NoData(label: "Data kosong"),
-            if (myData.isNotEmpty)
+            if (dataKaryawan.isNotEmpty)
               Expanded(
                 child: Column(
                   children: [
                     Expanded(
                       child: ListView.separated(
                         separatorBuilder: (context, index) => const Divider(),
-                        itemCount: myData.length,
+                        itemCount: dataKaryawan.length,
                         itemBuilder: (context, index) {
-                          KaryawanModel usuario = myData[index];
+                          KaryawanModel karyawanModel = dataKaryawan[index];
+                          CutiModel? cutiModel = dataCuti[index];
                           return Column(
                             children: [
                               CustomCard(
                                 child: CardBody(
-                                  karyawanModel: usuario,
-                                  isRemote: widget.isRemote,
+                                  karyawanModel: karyawanModel,
+                                  cutiModel: cutiModel,
                                 ),
                                 padding: 15,
                               ),
-                              if (index == myData.length - 1)
+                              if (index == dataKaryawan.length - 1)
                                 const SizedBox(
                                   height: 80,
                                 ),

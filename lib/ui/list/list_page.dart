@@ -7,7 +7,9 @@ import 'package:provider/provider.dart';
 
 
 class ListPage extends StatelessWidget {
-  const ListPage({Key? key}) : super(key: key);
+  const ListPage({Key? key,required this.pos, required this.title}) : super(key: key);
+  final int pos;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class ListPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
-          'List Page',
+          title,
           style: TextStyle(color: Colors.black),
         ),
         automaticallyImplyLeading: false,
@@ -41,15 +43,19 @@ class ListPage extends StatelessWidget {
             child: IndexedStack(
               index: context.watch<ListChangeNotifier>().tabIndex,
               children: [
-                const WList(
-                  isRemote: false,
+                WList(
+                  pos: pos,
                 ),
                 RefreshIndicator(
                   onRefresh: () {
                     try {
+                        context
+                            .read<ListChangeNotifier>()
+                            .getAllFilterCuti(pos);
+
                       return context
                           .read<ListChangeNotifier>()
-                          .getAllUsuarios();
+                          .getAllFilter(pos);
                     } catch (e) {
                       print(e);
 
@@ -62,8 +68,8 @@ class ListPage extends StatelessWidget {
                     }
                     return Future.value();
                   },
-                  child: const WList(
-                    isRemote: true,
+                  child: WList(
+                    pos: pos,
                   ),
                 ),
               ],

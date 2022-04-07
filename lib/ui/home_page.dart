@@ -11,8 +11,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  bool _loadData = false;
-  String _imageUrl = "";
   ValueNotifier<int> notificationCounterValueNotifer = ValueNotifier(0);
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -61,25 +59,49 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     ListTile(
                         contentPadding: EdgeInsets.symmetric(horizontal: 16),
                         leading: Icon(Icons.people),
-                        title: Text("Semua karyawan"),
-                        trailing: Icon(Icons.arrow_forward_ios, size: 16),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ListPage()))
-                              .then((value) {});
-                        }),
-                    ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                        leading: Icon(Icons.people),
-                        title: Text("Karyawan pertama bergabung"),
+                        title: Text("3 karyawan pertama bergabung"),
                         trailing: Icon(Icons.arrow_forward_ios, size: 16),
                         onTap: () {
                           Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ListPage()))
+                                      builder: (context) => ListPage(pos: 1, title:"3 karyawan pertama bergabung")))
+                              .then((value) {});
+                        }),
+                    ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        leading: Icon(Icons.people),
+                        title: Text("Karyawan pernah mengambil cuti"),
+                        trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ListPage(pos: 2, title:"Karyawan pernah mengambil cuti")))
+                              .then((value) {});
+                        }),
+                    ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        leading: Icon(Icons.people),
+                        title: Text("Karyawan cuti lebih dari 1"),
+                        trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ListPage(pos: 3, title:"Karyawan cuti lebih dari 1")))
+                              .then((value) {});
+                        }),
+                    ListTile(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        leading: Icon(Icons.people),
+                        title: Text("Sisa cuti karyawan"),
+                        trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ListPage(pos: 4, title:"Sisa cuti karyawan")))
                               .then((value) {});
                         }),
                   ],

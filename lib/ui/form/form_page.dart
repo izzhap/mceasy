@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get_it/get_it.dart';
-import 'package:mceasy/db/sqlite_usuario_respository.dart';
+import 'package:mceasy/db/sqlite_respository.dart';
 import 'package:mceasy/provider/form_change_notifier.dart';
 import 'package:mceasy/ui/form/widgets/form.dart';
 import 'package:mceasy/widgets/custom_card.dart';
@@ -17,8 +17,8 @@ class FormPage extends StatefulWidget {
 }
 
 class _FormPageState extends State<FormPage> {
-  final SqliteUsuarioRepository usuarioSqliteRepository =
-      GetIt.I<SqliteUsuarioRepository>();
+  final SqliteRepository usuarioSqliteRepository =
+      GetIt.I<SqliteRepository>();
 
   @override
   void initState() {

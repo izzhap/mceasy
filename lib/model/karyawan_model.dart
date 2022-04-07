@@ -15,14 +15,6 @@ class KaryawanModel {
     this.tanggal_bergabung,
   });
 
-  factory KaryawanModel.fromRemoteJson(Map<String, dynamic> json) {
-    return KaryawanModel(
-      no: json['no'],
-      nomor_induk: json['nomor_induk'],
-      nama: json['nama'],
-      alamat: json['alamat'],
-    );
-  }
 
   factory KaryawanModel.fromLocalJson(Map<String, dynamic> json) {
     if (!json.containsKey('nomor_induk')) {

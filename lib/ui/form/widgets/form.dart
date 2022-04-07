@@ -14,14 +14,18 @@ class WForm extends StatefulWidget {
 }
 
 class _FormState extends State<WForm> {
-  TextEditingController dateController = TextEditingController();
+  TextEditingController dateLahirController = TextEditingController();
+  TextEditingController dateBergabungController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    dateController.text = DateFormatUtils.formatDate(
+    dateLahirController.text = DateFormatUtils.formatDate(
         context.read<FormChangeNotifier>().tanggal_lahir);
+    dateBergabungController.text = DateFormatUtils.formatDate(
+        context.read<FormChangeNotifier>().tanggal_bergabung);
   }
 
   @override
@@ -37,10 +41,10 @@ class _FormState extends State<WForm> {
                 children: [
                   TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'Nama',
+                      labelText: 'Nomor Induk',
                     ),
                     initialValue:
-                        context.read<FormChangeNotifier>().nama,
+                        context.read<FormChangeNotifier>().nomor_induk,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Tidak boleh kosong';
@@ -49,12 +53,46 @@ class _FormState extends State<WForm> {
                       return null;
                     },
                     onChanged:
-                        context.read<FormChangeNotifier>().changeName,
+                        context.read<FormChangeNotifier>().changeNomorInduk,
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Nama',
+                    ),
+                    initialValue:
+                    context.read<FormChangeNotifier>().nama,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Tidak boleh kosong';
+                      }
+
+                      return null;
+                    },
+                    onChanged:
+                    context.read<FormChangeNotifier>().changeName,
+                  ),
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Alamat',
+                    ),
+                    initialValue:
+                    context.read<FormChangeNotifier>().alamat,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Tidak boleh kosong';
+                      }
+
+                      return null;
+                    },
+                    onChanged:
+                    context.read<FormChangeNotifier>().changeAlamat,
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
                     readOnly: true,
-                    controller: dateController,
+                    controller: dateLahirController,
                     decoration: const InputDecoration(
                       labelText: 'Tanggal lahir',
                     ),
@@ -65,7 +103,23 @@ class _FormState extends State<WForm> {
                       return null;
                     },
                     onTap: () async {
-                      await _changeDate(context);
+                      await _changeDateLahir(context);
+                    },
+                  ),
+                  TextFormField(
+                    readOnly: true,
+                    controller: dateBergabungController,
+                    decoration: const InputDecoration(
+                      labelText: 'Tanggal bergabung',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Tidak boleh kosong';
+                      }
+                      return null;
+                    },
+                    onTap: () async {
+                      await _changeDateBergabung(context);
                     },
                   ),
                   const SizedBox(height: 10),
@@ -105,7 +159,7 @@ class _FormState extends State<WForm> {
     );
   }
 
-  Future<void> _changeDate(BuildContext context) async {
+  Future<void> _changeDateLahir(BuildContext context) async {
     var date = await showDatePicker(
       context: context,
       initialDate: DateTime(DateTime.now().year - 5),
@@ -115,7 +169,21 @@ class _FormState extends State<WForm> {
 
     if (date != null) {
       context.read<FormChangeNotifier>().changeTanggalLahir(date);
-      dateController.text = DateFormatUtils.formatDate(date);
+      dateLahirController.text = DateFormatUtils.formatDate(date);
+    }
+  }
+
+  Future<void> _changeDateBergabung(BuildContext context) async {
+    var date = await showDatePicker(
+      context: context,
+      initialDate: DateTime(DateTime.now().year - 5),
+      firstDate: DateTime(1700),
+      lastDate: DateTime(2030),
+    );
+
+    if (date != null) {
+      context.read<FormChangeNotifier>().changeTanggalBergabung(date);
+      dateBergabungController.text = DateFormatUtils.formatDate(date);
     }
   }
 
@@ -147,7 +215,7 @@ class _FormState extends State<WForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content:
-                Text(widget.edit ? 'Edit Karyawan' : 'Tambah Karyawan'),
+                Text(widget.edit ? 'Berhasil edit karyawan' : 'Berhasil tambah karyawan'),
             backgroundColor: Colors.green,
           ),
         );

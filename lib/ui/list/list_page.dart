@@ -1,65 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:mceasy/provider/list_change_notifier.dart';
+import 'package:mceasy/ui/list/widgets/main_buttons.dart';
+import 'package:mceasy/ui/list/widgets/usuario_list.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:mceasy/ui/usuarios/presentation/list/usuario_list_change_notifier.dart';
-import 'package:mceasy/ui/usuarios/presentation/list/widgets/main_buttons.dart';
-import 'package:mceasy/ui/usuarios/presentation/list/widgets/usuario_list.dart';
 
-class UsuarioListPage extends StatelessWidget {
-  const UsuarioListPage({Key? key}) : super(key: key);
+class ListPage extends StatelessWidget {
+  const ListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          title: const Text('Usuarios'),
-          leading: SizedBox.fromSize(),
-          centerTitle: true,
+        title: Text(
+          'List Page',
+          style: TextStyle(color: Colors.black),
         ),
-        floatingActionButton:
-            context.watch<UsuarioListChangeNotifier>().tabIndex == 1
-                ? null
-                : const MainButtons(),
-        body: Column(
-          children: [
-            Expanded(
-              child: IndexedStack(
-                index: context.watch<UsuarioListChangeNotifier>().tabIndex,
-                children: [
-                  const UsuarioList(
-                    isRemote: false,
-                  ),
-                  RefreshIndicator(
-                    onRefresh: () {
-                      try {
-                        return context
-                            .read<UsuarioListChangeNotifier>()
-                            .getAllUsuarios(isRemote: true);
-                      } catch (e) {
-                        print(e);
+        automaticallyImplyLeading: false,
+        elevation: 0.0,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      floatingActionButton:
+          context.watch<ListChangeNotifier>().tabIndex == 1
+              ? null
+              : const MainButtons(),
+      body: Column(
+        children: [
+          Expanded(
+            child: IndexedStack(
+              index: context.watch<ListChangeNotifier>().tabIndex,
+              children: [
+                const UsuarioList(
+                  isRemote: false,
+                ),
+                RefreshIndicator(
+                  onRefresh: () {
+                    try {
+                      return context
+                          .read<ListChangeNotifier>()
+                          .getAllUsuarios(isRemote: true);
+                    } catch (e) {
+                      print(e);
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Error al traer a los usuarios'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                      return Future.value();
-                    },
-                    child: const UsuarioList(
-                      isRemote: true,
-                    ),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Error al traer a los usuarios'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                    return Future.value();
+                  },
+                  child: const UsuarioList(
+                    isRemote: true,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

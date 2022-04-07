@@ -1,8 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mceasy/provider/form_change_notifier.dart';
+import 'package:mceasy/provider/list_change_notifier.dart';
+import 'package:mceasy/ui/list/list_page.dart';
+import 'package:mceasy/ui/home_page.dart';
 
 import 'package:provider/provider.dart';
+
+import 'db/base_sqlite_repository.dart';
+import 'db/get_it_di.dart';
 
 
 Future<void> main() async {
@@ -14,10 +21,10 @@ Future<void> main() async {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (_) => UsuarioListChangeNotifier(),
+            create: (_) => ListChangeNotifier(),
           ),
           ChangeNotifierProvider(
-            create: (_) => UsuarioFormChangeNotifier(),
+            create: (_) => FormChangeNotifier(),
           ),
         ],
         child: const MyApp(),
@@ -38,10 +45,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'CRUD Usuarios',
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: UsuarioListPage(),
+      home: HomePage(),
     );
   }
 }

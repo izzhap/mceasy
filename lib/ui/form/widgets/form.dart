@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:mceasy/model/karyawan_model.dart';
+import 'package:mceasy/provider/form_change_notifier.dart';
+import 'package:mceasy/provider/list_change_notifier.dart';
+import 'package:mceasy/utils/date_format_utils.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:mceasy/ui/usuarios/model/usuario_entity.dart';
-import 'package:mceasy/ui/usuarios/presentation/form/usuario_form_change_notifier.dart';
-import 'package:mceasy/ui/usuarios/presentation/list/usuario_list_change_notifier.dart';
-import 'package:mceasy/ui/usuarios/presentation/list/list_page.dart';
-import 'package:mceasy/shared/utils/date_format_utils.dart';
-
-class UsuarioForm extends StatefulWidget {
-  const UsuarioForm({Key? key, required this.edit}) : super(key: key);
+class WForm extends StatefulWidget {
+  const WForm({Key? key, required this.edit}) : super(key: key);
   final bool edit;
   @override
-  State<UsuarioForm> createState() => _UsuarioFormState();
+  State<WForm> createState() => _FormState();
 }
 
-class _UsuarioFormState extends State<UsuarioForm> {
+class _FormState extends State<WForm> {
   TextEditingController dateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
@@ -23,12 +21,11 @@ class _UsuarioFormState extends State<UsuarioForm> {
   void initState() {
     super.initState();
     dateController.text = DateFormatUtils.formatDate(
-        context.read<UsuarioFormChangeNotifier>().fechaNacimiento);
+        context.read<FormChangeNotifier>().tanggal_lahir);
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> sexos = context.read<UsuarioFormChangeNotifier>().sexos;
     return Stack(
       children: [
         Form(
@@ -43,7 +40,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
                       labelText: 'Nombre',
                     ),
                     initialValue:
-                        context.read<UsuarioFormChangeNotifier>().nombre,
+                        context.read<FormChangeNotifier>().nama,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'El nombre es requerido';
@@ -52,7 +49,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
                       return null;
                     },
                     onChanged:
-                        context.read<UsuarioFormChangeNotifier>().changeNombre,
+                        context.read<FormChangeNotifier>().changeNombre,
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
@@ -72,18 +69,6 @@ class _UsuarioFormState extends State<UsuarioForm> {
                     },
                   ),
                   const SizedBox(height: 10),
-                  DropdownButtonFormField<String>(
-                    value:
-                        context.read<UsuarioFormChangeNotifier>().selectedSexo,
-                    items: sexos
-                        .map((e) => DropdownMenuItem(child: Text(e), value: e))
-                        .toList(),
-                    onChanged:
-                        context.read<UsuarioFormChangeNotifier>().changeSexo,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
                   ElevatedButton.icon(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
@@ -111,7 +96,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
             ),
           ),
         ),
-        if (context.watch<UsuarioFormChangeNotifier>().loading)
+        if (context.watch<FormChangeNotifier>().loading)
           Container(
             alignment: Alignment.center,
             child: const CircularProgressIndicator(),
@@ -129,33 +114,32 @@ class _UsuarioFormState extends State<UsuarioForm> {
     );
 
     if (fecha != null) {
-      context.read<UsuarioFormChangeNotifier>().changeFechaNacimiento(fecha);
+      context.read<FormChangeNotifier>().changeFechaNacimiento(fecha);
       dateController.text = DateFormatUtils.formatDate(fecha);
     }
   }
 
   Future<void> _saveUsuario(BuildContext context) async {
-    context.read<UsuarioFormChangeNotifier>().changeLoading(true);
-    var usuario = UsuarioEntity(
-      id: context.read<UsuarioFormChangeNotifier>().id,
-      nombre: context.read<UsuarioFormChangeNotifier>().nombre,
-      fechaNacimiento:
-          context.read<UsuarioFormChangeNotifier>().fechaNacimiento,
-      sexo: context
-          .read<UsuarioFormChangeNotifier>()
-          .extractFirstLetterSelectedSexo(),
+    context.read<FormChangeNotifier>().changeLoading(true);
+    var usuario = KaryawanModel(
+      no: context.read<FormChangeNotifier>().id,
+      nomor_induk: context.read<FormChangeNotifier>().nomor_induk,
+      nama: context.read<FormChangeNotifier>().nama,
+      tanggal_lahir:
+          context.read<FormChangeNotifier>().tanggal_lahir,
+      alamat: context.read<FormChangeNotifier>().alamat,
     );
 
     try {
       int createdOrUpdatedUser;
       if (!widget.edit) {
         createdOrUpdatedUser =
-            await context.read<UsuarioListChangeNotifier>().addUsuario(
+            await context.read<ListChangeNotifier>().addUsuario(
                   usuario,
                 );
       } else {
         createdOrUpdatedUser =
-            await context.read<UsuarioListChangeNotifier>().updateUsuario(
+            await context.read<ListChangeNotifier>().updateUsuario(
                   usuario,
                 );
       }
@@ -186,7 +170,7 @@ class _UsuarioFormState extends State<UsuarioForm> {
         ),
       );
     }
-    context.read<UsuarioFormChangeNotifier>().changeNombre("");
-    context.read<UsuarioFormChangeNotifier>().changeLoading(false);
+    context.read<FormChangeNotifier>().changeNombre("");
+    context.read<FormChangeNotifier>().changeLoading(false);
   }
 }

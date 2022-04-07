@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:mceasy/model/karyawan_model.dart';
+import 'package:mceasy/provider/form_change_notifier.dart';
+import 'package:mceasy/provider/list_change_notifier.dart';
+import 'package:mceasy/ui/form/form_page.dart';
+import 'package:mceasy/utils/date_format_utils.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:mceasy/ui/usuarios/model/usuario_entity.dart';
-import 'package:mceasy/ui/usuarios/presentation/form/usuario_form_change_notifier.dart';
-import 'package:mceasy/ui/usuarios/presentation/form/form_page.dart';
-import 'package:mceasy/ui/usuarios/presentation/list/usuario_list_change_notifier.dart';
-import 'package:mceasy/shared/utils/date_format_utils.dart';
 
-class UsuarioCardBody extends StatefulWidget {
-  const UsuarioCardBody(
-      {Key? key, required this.usuario, required this.isRemote})
+class CardBody extends StatefulWidget {
+  const CardBody(
+      {Key? key, required this.karyawanModel, required this.isRemote})
       : super(key: key);
 
-  final UsuarioEntity usuario;
+  final KaryawanModel karyawanModel;
   final bool isRemote;
 
   @override
-  State<UsuarioCardBody> createState() => _UsuarioCardBodyState();
+  State<CardBody> createState() => _CardBodyState();
 }
 
-class _UsuarioCardBodyState extends State<UsuarioCardBody> {
+class _CardBodyState extends State<CardBody> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,13 +28,8 @@ class _UsuarioCardBodyState extends State<UsuarioCardBody> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            widget.usuario.avatar != null
-                ? CircleAvatar(
-                    backgroundImage: NetworkImage(widget.usuario.avatar!),
-                  )
-                : const CircleAvatar(
-                    child: Icon(Icons.person),
-                  ),
+            const CircleAvatar(
+                    child: Icon(Icons.person)),
             const SizedBox(width: 10),
             const Expanded(
               child: Text(
@@ -48,26 +43,18 @@ class _UsuarioCardBodyState extends State<UsuarioCardBody> {
           ],
         ),
         const Divider(),
-        TextWrap(label: "Nombre", value: widget.usuario.nombre),
+        TextWrap(label: "Nombre", value: widget.karyawanModel.nama),
         const SizedBox(height: 10),
-        if (widget.usuario.fechaNacimiento != null)
+        if (widget.karyawanModel.tanggal_lahir != null)
           TextWrap(
             label: "Fecha de Nacimiento",
-            value: DateFormatUtils.formatDate(widget.usuario.fechaNacimiento!),
+            value: DateFormatUtils.formatDate(widget.karyawanModel.tanggal_lahir!),
           ),
         const SizedBox(height: 10),
-        if (widget.usuario.sexo != null)
-          TextWrap(
-            label: "Sexo",
-            value: widget.usuario.sexo!.toUpperCase() == "F"
-                ? "Femenino"
-                : "Masculino",
-          ),
-        const SizedBox(height: 10),
-        if (widget.usuario.email != null)
+        if (widget.karyawanModel.nomor_induk != null)
           TextWrap(
             label: "Email",
-            value: widget.usuario.email!,
+            value: widget.karyawanModel.nama,
           ),
         const SizedBox(height: 10),
         if (!widget.isRemote)
@@ -99,8 +86,8 @@ class _UsuarioCardBodyState extends State<UsuarioCardBody> {
                     if (delete == true) {
                       try {
                         var deleted = await context
-                            .read<UsuarioListChangeNotifier>()
-                            .delete(widget.usuario.id!);
+                            .read<ListChangeNotifier>()
+                            .delete(widget.karyawanModel.no!);
                         if (deleted < 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -136,8 +123,8 @@ class _UsuarioCardBodyState extends State<UsuarioCardBody> {
                       MaterialPageRoute(builder: (context) {
                         try {
                           context
-                              .read<UsuarioFormChangeNotifier>()
-                              .initUsuario(widget.usuario);
+                              .read<FormChangeNotifier>()
+                              .initUsuario(widget.karyawanModel);
                         } catch (e) {
                           print(e);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -148,7 +135,7 @@ class _UsuarioCardBodyState extends State<UsuarioCardBody> {
                           );
                         }
 
-                        return const UsuarioFormPage(
+                        return const FormPage(
                           edit: true,
                         );
                       }),

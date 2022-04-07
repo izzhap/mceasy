@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'package:mceasy/ui/usuarios/presentation/form/form_page.dart';
+import 'package:mceasy/ui/form/form_page.dart';
 
 class UsuarioListHeader extends StatelessWidget {
   const UsuarioListHeader({
@@ -19,7 +18,7 @@ class UsuarioListHeader extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const UsuarioFormPage(
+                    builder: (context) => const FormPage(
                       edit: false,
                     ),
                   ),

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
 import 'package:get_it/get_it.dart';
+import 'package:mceasy/db/sqlite_usuario_respository.dart';
+import 'package:mceasy/model/karyawan_model.dart';
 
-import 'package:mceasy/ui/usuarios/model/usuario_entity.dart';
-import 'package:mceasy/ui/usuarios/db/sqlite_usuario_respository.dart';
 
-class UsuarioListChangeNotifier extends ChangeNotifier {
-  List<UsuarioEntity> usuarios = [];
-  List<UsuarioEntity> usuariosRemote = [];
+class ListChangeNotifier extends ChangeNotifier {
+  List<KaryawanModel> usuarios = [];
+  List<KaryawanModel> usuariosRemote = [];
   bool loading = false;
   int tabIndex = 0;
 
   final SqliteUsuarioRepository usuarioSqliteRepository =
       GetIt.I<SqliteUsuarioRepository>();
 
-  UsuarioListChangeNotifier();
+  ListChangeNotifier();
 
   setLoading(bool value) {
     loading = value;
@@ -26,26 +26,26 @@ class UsuarioListChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUsuarios(List<UsuarioEntity> usuarioss) {
+  void setUsuarios(List<KaryawanModel> usuarioss) {
     usuarios = usuarioss;
     notifyListeners();
   }
 
-  void setUsuariosRemote(List<UsuarioEntity> usuarioss) {
+  void setUsuariosRemote(List<KaryawanModel> usuarioss) {
     usuariosRemote = usuarioss;
     notifyListeners();
   }
 
-  Future<int> addUsuario(UsuarioEntity usuario) async {
+  Future<int> addUsuario(KaryawanModel usuario) async {
     var created = await usuarioSqliteRepository.create(usuario);
     if (created > 0) setUsuarios([...usuarios, usuario]);
     return created;
   }
 
-  Future<int> updateUsuario(UsuarioEntity usuario) async {
+  Future<int> updateUsuario(KaryawanModel usuario) async {
     var updated = await usuarioSqliteRepository.update(usuario);
     if (updated > 0) {
-      var index = usuarios.indexWhere((u) => u.id == usuario.id);
+      var index = usuarios.indexWhere((u) => u.no == usuario.no);
       usuarios[index] = usuario;
       var newUsuarios = [...usuarios];
       setUsuarios(newUsuarios);
@@ -53,7 +53,7 @@ class UsuarioListChangeNotifier extends ChangeNotifier {
     return updated;
   }
 
-  Future<List<UsuarioEntity>> getAllUsuarios({required bool isRemote}) async {
+  Future<List<KaryawanModel>> getAllUsuarios({required bool isRemote}) async {
     loading = true;
     if (isRemote) {
       usuariosRemote = [];
@@ -71,7 +71,7 @@ class UsuarioListChangeNotifier extends ChangeNotifier {
     return usuarioss;
   }
 
-  Future<UsuarioEntity?> getOneUsuario(String id) async {
+  Future<KaryawanModel?> getOneUsuario(String id) async {
     var usuario = await usuarioSqliteRepository.getOne(id);
     return usuario;
   }
@@ -82,7 +82,7 @@ class UsuarioListChangeNotifier extends ChangeNotifier {
     }
     var deleted = await usuarioSqliteRepository.delete(id);
     if (deleted > 0) {
-      var index = usuarios.indexWhere((u) => u.id == id);
+      var index = usuarios.indexWhere((u) => u.no == id);
       usuarios.removeAt(index);
       var newUsuarios = [...usuarios];
       setUsuarios(newUsuarios);

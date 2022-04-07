@@ -1,6 +1,6 @@
+import 'package:mceasy/model/karyawan_model.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:mceasy/ui/usuarios/model/usuario_entity.dart';
 
 class SqliteUsuarioRepository {
   final Database _database;
@@ -9,68 +9,69 @@ class SqliteUsuarioRepository {
 
   SqliteUsuarioRepository(this._database);
 
-  Future<int> create(UsuarioEntity usuarioEntity) async {
+  Future<int> create(KaryawanModel karyawanModel) async {
     int id = await _getLastInsertedElementId();
-    usuarioEntity.id = id + 1;
-    Map<String, dynamic> usuarioJson = usuarioEntity.toLocalJson();
+    karyawanModel.no = id + 1;
+    Map<String, dynamic> karyawanJson = karyawanModel.toLocalJson();
 
-    return _database.insert(_tableName, usuarioJson);
+    return _database.insert(_tableNameEmployee, karyawanJson);
   }
 
   Future<int> _getLastInsertedElementId() async {
     List<Map<String, Object?>> allId =
-        await _database.rawQuery('SELECT MAX(id) FROM $_tableName');
-    int id = allId.first['MAX(id)'] as int? ?? 0;
+        await _database.rawQuery('SELECT MAX(no) FROM $_tableNameEmployee');
+    int id = allId.first['MAX(no)'] as int? ?? 0;
     return id;
   }
 
-  Future<List<UsuarioEntity>> getBy() async {
+  Future<List<KaryawanModel>> getBy() async {
     List<Map<String, Object?>> allId =
-    await _database.rawQuery('SELECT * FROM $_tableName where nombre=?', ['popo']);
+    await _database.rawQuery('SELECT * FROM $_tableNameEmployee');
+    //await _database.rawQuery('SELECT * FROM $_tableNameEmployee where nama=?', ['popo']);
     return allId
-        .map((usuario) => UsuarioEntity.fromLocalJson(usuario))
+        .map((karyawan) => KaryawanModel.fromLocalJson(karyawan))
         .toList();
   }
 
-  Future<int> update(UsuarioEntity usuarioEntity) async {
-    Map<String, dynamic> usuarioJson = usuarioEntity.toLocalJson();
+  Future<int> update(KaryawanModel karyawanModel) async {
+    Map<String, dynamic> usuarioJson = karyawanModel.toLocalJson();
     return _database.update(
-      _tableName,
+      _tableNameEmployee,
       usuarioJson,
-      where: "id = ?",
-      whereArgs: [usuarioEntity.id],
+      where: "no = ?",
+      whereArgs: [karyawanModel.no],
     );
   }
 
-  Future<List<UsuarioEntity>> getAll() async {
-    List<Map<String, Object?>> usuarios = await _database.query(_tableName);
-    if (usuarios.isEmpty) {
+  Future<List<KaryawanModel>> getAll() async {
+    List<Map<String, Object?>> karyawan = await _database.query(_tableNameEmployee);
+    if (karyawan.isEmpty) {
       return [];
     }
 
-    return usuarios
-        .map((usuario) => UsuarioEntity.fromLocalJson(usuario))
+    return karyawan
+        .map((karyawan) => KaryawanModel.fromLocalJson(karyawan))
         .toList();
   }
 
-  Future<UsuarioEntity?> getOne(String id) async {
-    List<Map<String, Object?>> usuarios = await _database.query(_tableName,
-        where: "id = ?", whereArgs: [id], limit: 1);
+  Future<KaryawanModel?> getOne(String id) async {
+    List<Map<String, Object?>> karyawan = await _database.query(_tableNameEmployee,
+        where: "no = ?", whereArgs: [id], limit: 1);
 
-    if (usuarios.isEmpty) {
+    if (karyawan.isEmpty) {
       return null;
     }
 
-    UsuarioEntity usuario = UsuarioEntity.fromLocalJson(usuarios.first);
+    KaryawanModel usuario = KaryawanModel.fromLocalJson(karyawan.first);
 
     return usuario;
   }
 
   Future<int> delete(int id) {
-    return _database.delete(_tableName, where: "id = ?", whereArgs: [id]);
+    return _database.delete(_tableNameEmployee, where: "no = ?", whereArgs: [id]);
   }
 
   Future<int> deleteAll() {
-    return _database.delete(_tableName);
+    return _database.delete(_tableNameEmployee);
   }
 }

@@ -22,7 +22,7 @@ class BaseSqliteRepository {
 
   Future<Database> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, 'test_itti_flutter.db');
+    String path = join(documentsDirectory.path, 'mceasy.db');
     print("DB path: $path");
     var db = await openDatabase(path, version: 1, onCreate: _onCreate);
     return db;
@@ -31,7 +31,10 @@ class BaseSqliteRepository {
   //Create the table
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-      'CREATE TABLE usuarios(id INTEGER PRIMARY KEY, nombre TEXT, fechaNacimiento TEXT, sexo TEXT)',
+      'CREATE TABLE karyawan(no INTEGER PRIMARY KEY, nomor_induk TEXT, nama TEXT, alamat TEXT, tanggal_lahir TEXT, tanggal_bergabung TEXT)',
+    );
+    await db.execute(
+      'CREATE TABLE cuti(nomor_induk TEXT PRIMARY KEY, tanggal_cuti TEXT, lama_cuti INTEGER, keterangan TEXT)',
     );
   }
 }

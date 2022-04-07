@@ -1,7 +1,8 @@
 import 'package:get_it/get_it.dart';
+import 'package:mceasy/db/sqlite_usuario_respository.dart';
 
-import 'package:mceasy/ui/usuarios/db/sqlite_usuario_respository.dart';
-import 'package:mceasy/shared/infrastructure/base_sqlite_repository.dart';
+import 'base_sqlite_repository.dart';
+
 
 final getIt = GetIt.instance;
 

@@ -25,8 +25,6 @@ class CutiModel {
 
     }
 
-    print('izzha${json['keterangan']}');
-
     return CutiModel(
       no: json['no'],
       lama_cuti: json['lama_cuti'] ?? 0,

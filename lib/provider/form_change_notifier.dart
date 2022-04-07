@@ -3,8 +3,6 @@ import 'package:mceasy/model/karyawan_model.dart';
 
 
 class FormChangeNotifier extends ChangeNotifier {
-  final List<String> sexos = ["Femenino", "Masculino"];
-
   int id = 1;
   String nama = "";
   String nomor_induk = "";
@@ -15,12 +13,12 @@ class FormChangeNotifier extends ChangeNotifier {
 
   FormChangeNotifier();
 
-  void initUsuario(KaryawanModel usuarioEntity) {
-    id = usuarioEntity.no ?? 1;
-    nama = usuarioEntity.nama;
-    alamat = usuarioEntity.alamat;
+  void initKaryawan(KaryawanModel karyawanModel) {
+    id = karyawanModel.no ?? 1;
+    nama = karyawanModel.nama;
+    alamat = karyawanModel.alamat;
     tanggal_lahir =
-        usuarioEntity.tanggal_lahir ?? DateTime(DateTime.now().year - 11);
+        karyawanModel.tanggal_lahir ?? DateTime(DateTime.now().year - 11);
   }
 
   void clear() {
@@ -35,12 +33,12 @@ class FormChangeNotifier extends ChangeNotifier {
   }
 
 
-  void changeNombre(String value) {
+  void changeName(String value) {
     nama = value;
     notifyListeners();
   }
 
-  void changeFechaNacimiento(DateTime value) {
+  void changeTanggalLahir(DateTime value) {
     tanggal_lahir = value;
     notifyListeners();
   }

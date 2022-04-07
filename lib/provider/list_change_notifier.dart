@@ -6,12 +6,11 @@ import 'package:mceasy/model/karyawan_model.dart';
 
 
 class ListChangeNotifier extends ChangeNotifier {
-  List<KaryawanModel> usuarios = [];
-  List<KaryawanModel> usuariosRemote = [];
+  List<KaryawanModel> listKaryawan = [];
   bool loading = false;
   int tabIndex = 0;
 
-  final SqliteUsuarioRepository usuarioSqliteRepository =
+  final SqliteUsuarioRepository SqliteRepository =
       GetIt.I<SqliteUsuarioRepository>();
 
   ListChangeNotifier();
@@ -26,78 +25,62 @@ class ListChangeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUsuarios(List<KaryawanModel> usuarioss) {
-    usuarios = usuarioss;
+  void setKaryawan(List<KaryawanModel> karyawans) {
+    listKaryawan = karyawans;
     notifyListeners();
   }
 
-  void setUsuariosRemote(List<KaryawanModel> usuarioss) {
-    usuariosRemote = usuarioss;
-    notifyListeners();
-  }
 
-  Future<int> addUsuario(KaryawanModel usuario) async {
-    var created = await usuarioSqliteRepository.create(usuario);
-    if (created > 0) setUsuarios([...usuarios, usuario]);
+  Future<int> addKaryawan(KaryawanModel karyawanModel) async {
+    var created = await SqliteRepository.create(karyawanModel);
+    if (created > 0) setKaryawan([...listKaryawan, karyawanModel]);
     return created;
   }
 
-  Future<int> updateUsuario(KaryawanModel usuario) async {
-    var updated = await usuarioSqliteRepository.update(usuario);
+  Future<int> updateKaryawan(KaryawanModel karyawanModel) async {
+    var updated = await SqliteRepository.update(karyawanModel);
     if (updated > 0) {
-      var index = usuarios.indexWhere((u) => u.no == usuario.no);
-      usuarios[index] = usuario;
-      var newUsuarios = [...usuarios];
-      setUsuarios(newUsuarios);
+      var index = listKaryawan.indexWhere((u) => u.no == karyawanModel.no);
+      listKaryawan[index] = karyawanModel;
+      var newUsuarios = [...listKaryawan];
+      setKaryawan(newUsuarios);
     }
     return updated;
   }
 
-  Future<List<KaryawanModel>> getAllUsuarios({required bool isRemote}) async {
+  Future<List<KaryawanModel>> getAllUsuarios() async {
     loading = true;
-    if (isRemote) {
-      usuariosRemote = [];
-    } else {
-      usuarios = [];
-    }
+    listKaryawan = [];
     var usuarioss =
-         await usuarioSqliteRepository.getBy();
-    if (isRemote) {
-      setUsuariosRemote(usuarioss);
-    } else {
-      setUsuarios(usuarioss);
-    }
+         await SqliteRepository.getBy();
+
+    setKaryawan(usuarioss);
     loading = false;
     return usuarioss;
   }
 
-  Future<KaryawanModel?> getOneUsuario(String id) async {
-    var usuario = await usuarioSqliteRepository.getOne(id);
-    return usuario;
-  }
-
   Future<int> delete(int id) async {
-    if (usuarios.isEmpty) {
+    if (listKaryawan.isEmpty) {
       return 0;
     }
-    var deleted = await usuarioSqliteRepository.delete(id);
+    var deleted = await SqliteRepository.delete(id);
     if (deleted > 0) {
-      var index = usuarios.indexWhere((u) => u.no == id);
-      usuarios.removeAt(index);
-      var newUsuarios = [...usuarios];
-      setUsuarios(newUsuarios);
+      var index = listKaryawan.indexWhere((u) => u.no == id);
+      listKaryawan.removeAt(index);
+      var newUsuarios = [...listKaryawan];
+      setKaryawan(listKaryawan);
     }
     return deleted;
   }
 
   Future<int> deleteAll() async {
-    if (usuarios.isEmpty) {
+    if (listKaryawan.isEmpty) {
       return 0;
     }
-    var deleted = await usuarioSqliteRepository.deleteAll();
+    var deleted = await SqliteRepository.deleteAll();
     if (deleted > 0) {
-      usuarios = [];
-      setUsuarios([]);
+      listKaryawan = [];
+      setKaryawan([]);
     }
     return deleted;
   }

@@ -37,30 +37,30 @@ class _FormState extends State<WForm> {
                 children: [
                   TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'Nombre',
+                      labelText: 'Nama',
                     ),
                     initialValue:
                         context.read<FormChangeNotifier>().nama,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'El nombre es requerido';
+                        return 'Tidak boleh kosong';
                       }
 
                       return null;
                     },
                     onChanged:
-                        context.read<FormChangeNotifier>().changeNombre,
+                        context.read<FormChangeNotifier>().changeName,
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
                     readOnly: true,
                     controller: dateController,
                     decoration: const InputDecoration(
-                      labelText: 'Fecha de Nacimiento',
+                      labelText: 'Tanggal lahir',
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'La fecha de nacimiento es requerida';
+                        return 'Tidak boleh kosong';
                       }
                       return null;
                     },
@@ -73,12 +73,12 @@ class _FormState extends State<WForm> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         try {
-                          await _saveUsuario(context);
+                          await _saveKaryawan(context);
                         } catch (e) {
                           print(e);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Error al guardar el usuario'),
+                              content: Text('Operation success'),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -88,7 +88,7 @@ class _FormState extends State<WForm> {
                     icon: Icon(!widget.edit
                         ? Icons.add_outlined
                         : Icons.edit_outlined),
-                    label: Text(widget.edit ? "Modificar" : "Agregar"),
+                    label: Text(widget.edit ? "Edit" : "Tambah"),
                   ),
                   const SizedBox(height: 10),
                 ],
@@ -106,20 +106,20 @@ class _FormState extends State<WForm> {
   }
 
   Future<void> _changeDate(BuildContext context) async {
-    var fecha = await showDatePicker(
+    var date = await showDatePicker(
       context: context,
       initialDate: DateTime(DateTime.now().year - 5),
       firstDate: DateTime(1700),
       lastDate: DateTime(2030),
     );
 
-    if (fecha != null) {
-      context.read<FormChangeNotifier>().changeFechaNacimiento(fecha);
-      dateController.text = DateFormatUtils.formatDate(fecha);
+    if (date != null) {
+      context.read<FormChangeNotifier>().changeTanggalLahir(date);
+      dateController.text = DateFormatUtils.formatDate(date);
     }
   }
 
-  Future<void> _saveUsuario(BuildContext context) async {
+  Future<void> _saveKaryawan(BuildContext context) async {
     context.read<FormChangeNotifier>().changeLoading(true);
     var usuario = KaryawanModel(
       no: context.read<FormChangeNotifier>().id,
@@ -134,12 +134,12 @@ class _FormState extends State<WForm> {
       int createdOrUpdatedUser;
       if (!widget.edit) {
         createdOrUpdatedUser =
-            await context.read<ListChangeNotifier>().addUsuario(
+            await context.read<ListChangeNotifier>().addKaryawan(
                   usuario,
                 );
       } else {
         createdOrUpdatedUser =
-            await context.read<ListChangeNotifier>().updateUsuario(
+            await context.read<ListChangeNotifier>().updateKaryawan(
                   usuario,
                 );
       }
@@ -147,7 +147,7 @@ class _FormState extends State<WForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content:
-                Text(widget.edit ? 'Usuario Modificado' : 'Usuario creado'),
+                Text(widget.edit ? 'Edit Karyawan' : 'Tambah Karyawan'),
             backgroundColor: Colors.green,
           ),
         );
@@ -155,7 +155,7 @@ class _FormState extends State<WForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content:
-                Text("Error al ${widget.edit ? 'editar' : 'crear'} el usuario"),
+                Text("Error ${widget.edit ? 'Edit' : 'Tambah'} "),
             backgroundColor: Colors.red,
           ),
         );
@@ -165,12 +165,12 @@ class _FormState extends State<WForm> {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Error al guardar el usuario'),
+          content: Text('Error'),
           backgroundColor: Colors.red,
         ),
       );
     }
-    context.read<FormChangeNotifier>().changeNombre("");
+    context.read<FormChangeNotifier>().changeName("");
     context.read<FormChangeNotifier>().changeLoading(false);
   }
 }

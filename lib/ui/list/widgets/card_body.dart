@@ -31,9 +31,9 @@ class _CardBodyState extends State<CardBody> {
             const CircleAvatar(
                     child: Icon(Icons.person)),
             const SizedBox(width: 10),
-            const Expanded(
+            Expanded(
               child: Text(
-                "Software Developer",
+                "${widget.karyawanModel.nama}",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -43,11 +43,11 @@ class _CardBodyState extends State<CardBody> {
           ],
         ),
         const Divider(),
-        TextWrap(label: "Nombre", value: widget.karyawanModel.nama),
+        TextWrap(label: "Nama", value: widget.karyawanModel.nama),
         const SizedBox(height: 10),
         if (widget.karyawanModel.tanggal_lahir != null)
           TextWrap(
-            label: "Fecha de Nacimiento",
+            label: "Tanggal Lahir",
             value: DateFormatUtils.formatDate(widget.karyawanModel.tanggal_lahir!),
           ),
         const SizedBox(height: 10),
@@ -67,16 +67,16 @@ class _CardBodyState extends State<CardBody> {
                     final bool? delete = await showDialog<bool>(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text("Eliminar Usuario"),
+                        title: const Text("Informasi"),
                         content: const Text(
-                            "¿Está seguro que desea eliminar el usuario?"),
+                            "Yakin ingin menghapus data?"),
                         actions: [
                           TextButton(
-                            child: const Text("Cancelar"),
+                            child: const Text("Tidak"),
                             onPressed: () => Navigator.of(context).pop(false),
                           ),
                           TextButton(
-                            child: const Text("Eliminar"),
+                            child: const Text("Ya"),
                             onPressed: () => Navigator.of(context).pop(true),
                           ),
                         ],
@@ -91,7 +91,7 @@ class _CardBodyState extends State<CardBody> {
                         if (deleted < 0) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Error al eliminar el usuario'),
+                              content: Text('Error data'),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -100,7 +100,7 @@ class _CardBodyState extends State<CardBody> {
                         print(e);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Error al eliminar el usuario'),
+                            content: Text('Error data'),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -111,7 +111,7 @@ class _CardBodyState extends State<CardBody> {
                     backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
                   icon: const Icon(Icons.delete),
-                  label: const Text("Eliminar"),
+                  label: const Text("Hapus"),
                 ),
               ),
               const SizedBox(width: 10),
@@ -124,12 +124,12 @@ class _CardBodyState extends State<CardBody> {
                         try {
                           context
                               .read<FormChangeNotifier>()
-                              .initUsuario(widget.karyawanModel);
+                              .initKaryawan(widget.karyawanModel);
                         } catch (e) {
                           print(e);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('Error al inicializar usuario/s'),
+                              content: Text('Error data'),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -146,7 +146,7 @@ class _CardBodyState extends State<CardBody> {
                     backgroundColor: MaterialStateProperty.all(Colors.green),
                   ),
                   icon: const Icon(Icons.update),
-                  label: const Text("Actualizar"),
+                  label: const Text("Edit"),
                 ),
               ),
             ],

@@ -60,7 +60,7 @@ class _FormPageState extends State<FormPage> {
               child: Column(
                 children: [
                   Text(
-                    widget.edit ? "Modificar Usuario" : "Crear Usuario",
+                    widget.edit ? "Edit Karyawan" : "Tambah Karyawan",
                     style: const TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,

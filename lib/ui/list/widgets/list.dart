@@ -1,39 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:mceasy/model/karyawan_model.dart';
 import 'package:mceasy/provider/list_change_notifier.dart';
-import 'package:mceasy/ui/list/widgets/usuario_card_body.dart';
+import 'package:mceasy/ui/list/widgets/card_body.dart';
 import 'package:mceasy/widgets/custom_card.dart';
 import 'package:mceasy/widgets/no_data.dart';
 
 import 'package:provider/provider.dart';
 
 
-class UsuarioList extends StatefulWidget {
-  const UsuarioList({Key? key, required this.isRemote}) : super(key: key);
+class WList extends StatefulWidget {
+  const WList({Key? key, required this.isRemote}) : super(key: key);
 
   final bool isRemote;
 
   @override
-  State<UsuarioList> createState() => _UsuarioListState();
+  State<WList> createState() => _WListState();
 }
 
-class _UsuarioListState extends State<UsuarioList> {
+class _WListState extends State<WList> {
   @override
   void initState() {
     super.initState();
-    _loadUsuarios();
+    _loadKaryawan();
   }
 
-  void _loadUsuarios() {
+  void _loadKaryawan() {
     try {
       context
           .read<ListChangeNotifier>()
-          .getAllUsuarios(isRemote: widget.isRemote);
+          .getAllUsuarios();
     } catch (e) {
       print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Error al traer a los usuarios'),
+          content: Text('Error data'),
           backgroundColor: Colors.red,
         ),
       );
@@ -42,31 +42,29 @@ class _UsuarioListState extends State<UsuarioList> {
 
   @override
   Widget build(BuildContext context) {
-    var myUsuarios = widget.isRemote
-        ? context.watch<ListChangeNotifier>().usuariosRemote
-        : context.watch<ListChangeNotifier>().usuarios;
+    var myData = context.watch<ListChangeNotifier>().listKaryawan;
     return Stack(
       children: [
         Column(
           children: [
-            if (myUsuarios.isEmpty &&
+            if (myData.isEmpty &&
                 !context.watch<ListChangeNotifier>().loading)
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.2,
               ),
-            if (myUsuarios.isEmpty &&
+            if (myData.isEmpty &&
                 !context.watch<ListChangeNotifier>().loading)
-              const NoData(label: "No Hay Usuarios"),
-            if (myUsuarios.isNotEmpty)
+              const NoData(label: "Data kosong"),
+            if (myData.isNotEmpty)
               Expanded(
                 child: Column(
                   children: [
                     Expanded(
                       child: ListView.separated(
                         separatorBuilder: (context, index) => const Divider(),
-                        itemCount: myUsuarios.length,
+                        itemCount: myData.length,
                         itemBuilder: (context, index) {
-                          KaryawanModel usuario = myUsuarios[index];
+                          KaryawanModel usuario = myData[index];
                           return Column(
                             children: [
                               CustomCard(
@@ -76,7 +74,7 @@ class _UsuarioListState extends State<UsuarioList> {
                                 ),
                                 padding: 15,
                               ),
-                              if (index == myUsuarios.length - 1)
+                              if (index == myData.length - 1)
                                 const SizedBox(
                                   height: 80,
                                 ),

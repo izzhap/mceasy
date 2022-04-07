@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mceasy/provider/list_change_notifier.dart';
 import 'package:mceasy/ui/list/widgets/main_buttons.dart';
-import 'package:mceasy/ui/list/widgets/usuario_list.dart';
+import 'package:mceasy/ui/list/widgets/list.dart';
 
 import 'package:provider/provider.dart';
 
@@ -41,7 +41,7 @@ class ListPage extends StatelessWidget {
             child: IndexedStack(
               index: context.watch<ListChangeNotifier>().tabIndex,
               children: [
-                const UsuarioList(
+                const WList(
                   isRemote: false,
                 ),
                 RefreshIndicator(
@@ -49,20 +49,20 @@ class ListPage extends StatelessWidget {
                     try {
                       return context
                           .read<ListChangeNotifier>()
-                          .getAllUsuarios(isRemote: true);
+                          .getAllUsuarios();
                     } catch (e) {
                       print(e);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Error al traer a los usuarios'),
+                          content: Text('Error data'),
                           backgroundColor: Colors.red,
                         ),
                       );
                     }
                     return Future.value();
                   },
-                  child: const UsuarioList(
+                  child: const WList(
                     isRemote: true,
                   ),
                 ),

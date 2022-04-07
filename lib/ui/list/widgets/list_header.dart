@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mceasy/ui/form/form_page.dart';
 
-class UsuarioListHeader extends StatelessWidget {
-  const UsuarioListHeader({
+class ListHeader extends StatelessWidget {
+  const ListHeader({
     Key? key,
   }) : super(key: key);
 
@@ -25,7 +25,7 @@ class UsuarioListHeader extends StatelessWidget {
                 );
               },
               icon: const Icon(Icons.add),
-              label: const Text("Agregar")),
+              label: const Text("Simpan")),
         ],
       ),
     );
